@@ -31,7 +31,7 @@ m4/*.m4
 *.orig
 *.rej
 *.lo
-*.la
+*.a
 missing
 .dirstamp
 openbox/openbox

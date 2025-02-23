@@ -26,9 +26,9 @@ INCLUDES = -I.
 check_PROGRAMS = \
 	obrender/rendertest
 
-lib_LTLIBRARIES = \
-	obt/libobt.la \
-	obrender/libobrender.la
+noinst_LIBRARIES = \
+	obt/libobt.a \
+	obrender/libobrender.a
 
 bin_PROGRAMS = \
 	openbox/openbox \
@@ -64,15 +64,15 @@ obrender_rendertest_CPPFLAGS = \
 	$(GLIB_CFLAGS) \
 	-DG_LOG_DOMAIN=\"RenderTest\"
 obrender_rendertest_LDADD = \
-	obt/libobt.la \
-	obrender/libobrender.la \
+	obt/libobt.a \
+	obrender/libobrender.a \
 	$(GLIB_LIBS) \
 	$(PANGO_LIBS) \
 	$(XML_LIBS) \
 	$(X_LIBS)
 obrender_rendertest_SOURCES = obrender/test.c
 
-obrender_libobrender_la_CPPFLAGS = \
+obrender_libobrender_a_CPPFLAGS = \
 	$(X_CFLAGS) \
 	$(GLIB_CFLAGS) \
 	$(XML_CFLAGS) \
@@ -81,17 +81,15 @@ obrender_libobrender_la_CPPFLAGS = \
 	$(LIBRSVG_CFLAGS) \
 	-DG_LOG_DOMAIN=\"ObRender\" \
 	-DDEFAULT_THEME=\"$(theme)\"
-obrender_libobrender_la_LDFLAGS = \
-	-version-info $(RR_CURRENT):$(RR_REVISION):$(RR_AGE)
-obrender_libobrender_la_LIBADD = \
-	obt/libobt.la \
+obrender_libobrender_a_LDFLAGS = \
+	obt/libobt.a \
 	$(X_LIBS) \
 	$(PANGO_LIBS) \
 	$(GLIB_LIBS) \
 	$(IMLIB2_LIBS) \
 	$(LIBRSVG_LIBS) \
 	$(XML_LIBS)
-obrender_libobrender_la_SOURCES = \
+obrender_libobrender_a_SOURCES = \
 	gettext.h \
 	obrender/button.c \
 	obrender/color.h \
@@ -117,7 +115,7 @@ obrender_libobrender_la_SOURCES = \
 
 ## obt ##
 
-obt_libobt_la_CPPFLAGS = \
+obt_libobt_a_CPPFLAGS = \
 	$(X_CFLAGS) \
 	$(XINERAMA_CFLAGS) \
 	$(XKB_CFLAGS) \
@@ -130,9 +128,7 @@ obt_libobt_la_CPPFLAGS = \
 	-DLOCALEDIR=\"$(localedir)\" \
 	-DDATADIR=\"$(datadir)\" \
 	-DCONFIGDIR=\"$(configdir)\"
-obt_libobt_la_LDFLAGS = \
-	-version-info $(OBT_CURRENT):$(OBT_REVISION):$(OBT_AGE)
-obt_libobt_la_LIBADD = \
+obt_libobt_a_LDFLAGS = \
 	$(X_LIBS) \
 	$(XINERAMA_LIBS) \
 	$(XKB_LIBS) \
@@ -141,7 +137,7 @@ obt_libobt_la_LIBADD = \
 	$(XSYNC_LIBS) \
 	$(GLIB_LIBS) \
 	$(XML_LIBS)
-obt_libobt_la_SOURCES = \
+obt_libobt_a_SOURCES = \
 	obt/bsearch.h \
 	obt/display.h \
 	obt/display.c \
@@ -184,14 +180,17 @@ openbox_openbox_LDADD = \
 	$(XRANDR_LIBS) \
 	$(SM_LIBS) \
 	$(GLIB_LIBS) \
+	$(PANGO_LIBS) \
 	$(X_LIBS) \
+	$(IMLIB2_LIBS) \
+	$(LIBRSVG_LIBS) \
 	$(XCURSOR_LIBS) \
 	$(LIBSN_LIBS) \
 	$(XML_LIBS) \
 	$(EFENCE_LIBS) \
 	$(LIBINTL) \
-	obrender/libobrender.la \
-	obt/libobt.la
+	obrender/libobrender.a \
+	obt/libobt.a
 openbox_openbox_LDFLAGS = -export-dynamic
 openbox_openbox_SOURCES = \
 	gettext.h \
@@ -321,7 +320,7 @@ obt_obt_unittests_CPPFLAGS = \
 	-DG_LOG_DOMAIN=\"Obt-Unittests\"
 obt_obt_unittests_LDADD = \
 	$(GLIB_LIBS) \
-	obt/libobt.la
+	obt/libobt.a
 obt_obt_unittests_LDFLAGS = -export-dynamic
 obt_obt_unittests_SOURCES = \
 	obt/unittest_base.h \
