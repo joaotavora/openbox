@@ -2722,12 +2722,22 @@ void client_calc_layer(ObClient *self)
 
     /* now recalc any windows in the fullscreen layer which have not
        had their layer recalced already */
+    /* collect clients first to avoid iterator invalidation when
+       client_calc_layer_internal modifies stacking_list */
+    GList *clients_to_process = NULL;
     for (; it; it = g_list_next(it)) {
         if (window_layer(it->data) < OB_STACKING_LAYER_FULLSCREEN) break;
         else if (WINDOW_IS_CLIENT(it->data) &&
                  !WINDOW_AS_CLIENT(it->data)->visited)
-            client_calc_layer_internal(it->data);
+            clients_to_process = g_list_prepend(clients_to_process, it->data);
     }
+
+    /* now process them (safe because we're not iterating stacking_list) */
+    for (it = clients_to_process; it; it = g_list_next(it)) {
+        client_calc_layer_internal(it->data);
+    }
+
+    g_list_free(clients_to_process);
 }
 
 gboolean client_should_show(ObClient *self)
