@@ -27,8 +27,20 @@ AC_DEFUN([OB_DEBUG],
     AC_HELP_STRING([--enable-gprof-libc],[Link against libc with profiling support [[default=no]]]),
     [PROFLC=$enableval], [PROFLC="no"])
 
+    AC_ARG_ENABLE([address-sanitizer],
+    AC_HELP_STRING([--enable-address-sanitizer],[Enable Address Sanitizer for debugging memory errors [[default=no]]]),
+    [ASAN=$enableval], [ASAN="no"])
+
+    AC_ARG_ENABLE([thread-sanitizer],
+    AC_HELP_STRING([--enable-thread-sanitizer],[Enable Thread Sanitizer for debugging race conditions [[default=no]]]),
+    [TSAN=$enableval], [TSAN="no"])
+
     if test "$PROFLC" = "yes"; then
         PROF="yes" # always enable profiling then
+    fi
+
+    if test "$ASAN" = "yes" && test "$TSAN" = "yes"; then
+        AC_MSG_ERROR([Address Sanitizer and Thread Sanitizer cannot be used together])
     fi
 
     TEST=""
@@ -49,6 +61,12 @@ AC_DEFUN([OB_DEBUG],
     fi
     if test "$SUPERWARN" = "yes"; then
 	MSG="$MSG with super warnings"
+    fi
+    if test "$ASAN" = "yes"; then
+	MSG="$MSG with Address Sanitizer"
+    fi
+    if test "$TSAN" = "yes"; then
+	MSG="$MSG with Thread Sanitizer"
     fi
     AC_MSG_RESULT([$MSG])
     
@@ -100,6 +118,14 @@ AC_DEFUN([OB_COMPILER_FLAGS],
 	fi
 	if test "$PROFLC" = "yes"; then
 	    L="$L -lc_p -lm_p"
+	fi
+	if test "$ASAN" = "yes"; then
+	    FLAGS="$FLAGS -fsanitize=address -fno-omit-frame-pointer"
+	    L="$L -fsanitize=address"
+	fi
+	if test "$TSAN" = "yes"; then
+	    FLAGS="$FLAGS -fsanitize=thread -fno-omit-frame-pointer"
+	    L="$L -fsanitize=thread"
 	fi
 	FLAGS="$FLAGS -fno-strict-aliasing"
     fi
